@@ -1,0 +1,373 @@
+
+# set the stage and task in automation  
+# Fetch the project record based on the ID
+project = env['project.project'].browse(record.id)
+
+# Check if the project exists before proceeding
+if not project.exists():
+    raise ValueError("Project with ID %s does not exist" % record.id)
+
+# Define stages, tasks, and subtasks along with descriptions
+stages_and_tasks = {
+    'CRM': [
+        {
+            'name':'CRM approval-50% Payment',
+            'description': 'Collect 50% Payment and approval on Wood work allocation.'
+        },
+        {
+            'name':'CRM approval-40% Payment',
+            'description': 'Collect 40% Payment and approval on design stage.'
+        },
+        {
+            'name': 'Project allocation to designer',
+            'description': 'Allocate the project to a designer to begin work.'
+        },
+        {
+            'name': 'CRM approval-10% Payment',
+            'description': 'CRM team reviews and approves the project for further steps.',
+        },
+        {
+            'name': 'Booking meeting',
+            'description': 'Sale, Designer, CRM discuss about Pre sale details and quote'
+        }
+    ],
+    'Designs': [
+        {
+            'name':'Sharing to drawing to BOQ'
+        },
+        {
+            'name': '3rd Party Allocation'
+        },
+        {
+            'name': '3rd Party selection'
+        },
+        {
+            'name': 'False Ceiling & Electrical Design'
+        },
+        {
+            'name': 'Wood Work Production'
+        },
+        {
+            'name': 'Design Finalization'
+        },
+        {
+            'name': 'Design Discussion with Supervisor/CRM'
+        },
+        {
+            'name': 'Site Marking'
+        },
+        {
+            'name': 'Explain to Client: Final Design & Scope'
+        },
+        {
+            'name': '3rd Client Meeting'
+        },
+        {
+            'name': '3rd Cut Design'
+        },
+        {
+            'name': 'Color Selection'
+        },
+        {
+            'name': '2nd Client Meeting'
+        },
+        {
+            'name': '2nd Cut Designer Scope'
+        },
+        {
+            'name': '2nd Cut Design'
+        },
+        {
+            'name': '1st Client Meeting'
+        },
+        {
+            'name': '1st Cut Design'
+        },
+        {
+            'name': 'Initial Site Measurement'
+        }
+        # Continue with other tasks and their descriptions...
+    ],
+    'BOQ' : [
+            {
+                'name' :'BOQ Release',
+                'description': 'Releasing the Bill of Quantities with approval on the next day.'
+            },
+            {
+                'name' :'BOQ Working - Third Party',
+                'description': 'Working on the Bill of Quantities related to third-party items.'
+            },
+            {
+                'name' :'BOQ Creation',
+                'description': 'Working on the Bill of Quantities related to woodwork.'
+            },
+        ],
+        'Purchase': [
+            {
+                'name':'Factory Process',
+                'subtasks':[
+                    {
+                        'name':'Material delivery to factory'
+                    }
+                ]
+            },
+            {
+            'name': 'Bathroom Fixtures & Fittings',
+            'subtasks': [
+                {'name': 'PO', 'description': 'Processing purchase order for bathroom fixtures.'},
+                {'name': 'Delivering', 'description': 'Delivering bathroom fixtures.'}
+            ]
+        },
+        {
+            'name': 'Curtain Rod & Blinds',
+            'subtasks': [
+                {'name': 'PO', 'description': 'Processing purchase order for curtain rods and blinds.'},
+                {'name': 'Delivering', 'description': 'Delivering curtain rods and blinds.'},
+            ]
+        },
+         {
+            'name': 'Water Purifier & RO Installation',
+            'subtasks': [
+                {'name': 'Water Purifier PO', 'description': 'Processing PO for water purifier.'},
+                {'name': 'Delivery', 'description': 'Delivering  water purifier & RO unit.'}
+            ]
+        },
+        {
+            'name': 'HOB Installation',
+            'subtasks': [
+                {'name': 'HOB PO', 'description': 'Processing PO for HOB installation.'},
+            ]
+        },
+        {
+            'name': 'Painting Work',
+            'subtasks': [
+                {'name': 'PO', 'description': 'Processing purchase order for painting materials.'},
+                {'name': 'Delivering', 'description': 'Delivering painting materials.'},
+            ]
+        },
+        {
+            'name': 'Wood Work',
+            'subtasks': [
+                {'name': 'PO Woodwork', 'description': 'Processing PO for woodwork materials.'},
+                {'name': 'Material Delivery to Factory', 'description': 'Delivering woodwork materials to factory.'},
+            ]
+        },
+        {
+            'name': 'Home Theater Wiring',
+            'subtasks': [
+                {'name': 'PO', 'description': 'Processing purchase order for home theater wiring.'},
+                {'name': 'Delivering', 'description': 'Delivering wiring materials to the site.'},
+            ]
+        },
+        {
+            'name': 'AC Installation',
+            'subtasks': [
+                {'name': 'Backboard PO & Delivery', 'description': 'Processing PO and delivery of AC backboard.'},
+            ]
+        },
+        {
+            'name': 'Water Softener Installation',
+            'subtasks': [
+                {'name': 'PO', 'description': 'Processing purchase order for water softeners.'},
+                {'name': 'Delivering', 'description': 'Delivering water softeners.'}
+            ]
+        },
+        {
+            'name': 'UPVC Window Work',
+            'subtasks': [
+                {'name': 'PO', 'description': 'Processing purchase order for UPVC windows.'},
+                {'name': 'Delivering', 'description': 'Delivering UPVC windows to the site.'},
+            ]
+        },
+        {
+            'name': 'Grill Work',
+            'subtasks': [
+                {'name': 'Purchasing', 'description': 'Purchasing grills for the site.'},
+                {'name': 'Delivering', 'description': 'Delivering grills to the site.'},
+            ]
+        },
+        {
+            'name': 'Stone Cladding',
+            'subtasks': [
+                {'name': 'PO', 'description': 'Processing purchase order for stone cladding.'},
+                {'name': 'Delivering the Material', 'description': 'Delivering stone cladding material.'},
+            ]
+        }
+        ],
+        'Factory': [
+            {
+                'name':'Factory Process',
+                'subtasks': [
+                    {'name':'Material delivery to site'}
+                ]
+            }
+        ],
+         'Project': [
+             {
+            'name': 'Handover & Completion Certificate',
+            'description': 'Handing over the project and completing necessary certificates.'
+        },
+        {
+            'name':'Quality Check','description':'Check the quality of deep cleaning',
+        },
+        {
+            'name': 'Deep Cleaning',
+            'description': 'Conducting deep cleaning of the site.'
+        },
+        {
+            'name': 'Bathroom Fixtures & Fittings','description': 'Installing bathroom fixtures.'
+        },
+        {
+            'name': 'Curtain Rod & Blinds','description': 'Installing curtain rods and blinds.'
+        },
+        {
+            'name': 'Water Purifier & RO Installation','description': 'Installing water purifier & RO unit.'
+        },
+        {
+            'name': 'HOB Installation',
+            'subtasks': [
+                {'name': 'Installation Booking', 'description': 'Booking HOB installation.'},
+                {'name': 'HOB Installation', 'description': 'Installing HOB unit.'}
+            ]
+        },
+        {
+            'name': 'Painting Work','description': 'Conducting touch-up painting.'
+        },
+        {
+            'name': 'Wood Work',
+            'subtasks': [
+                {'name': 'Production', 'description': 'Producing the woodwork.'},
+                {'name': 'Material Delivery to Site', 'description': 'Delivering woodwork materials to site.'},
+                {'name': 'Carcass Assembling', 'description': 'Assembling carcass for woodwork.'},
+                {'name': 'Kitchen Counter Top Installation', 'description': 'Installing kitchen countertop.'},
+                {'name': 'Sink & Tap Installation', 'description': 'Installing sink and tap.'},
+                {'name': 'Shutter Assembling', 'description': 'Assembling shutters for the woodwork.'},
+                {'name': 'Mirror & Glass Installation', 'description': 'Installing mirror and glass.'},
+                {'name': 'Aristo Installation', 'description': 'Installing Aristo materials.'},
+                {'name': 'Handle fixing', 'description': 'Fixing handles for woodwork.'}
+            ]
+        },
+        {
+            'name': 'Home Theater Wiring','description':'Installing home theater or projector wiring.'
+        },
+        {
+            'name': 'AC Installation',
+            'subtasks': [
+                {'name': 'Copper Piping', 'description': 'Installing copper piping for AC units.'},
+                {'name': 'Cutout Checks', 'description': 'Performing AC cutout checks.'},
+                {'name': 'AC Installation', 'description': 'Installing AC and backboard.'}
+            ]
+        },
+        {
+            'name': 'Water Softener Installation','description': 'Installing water softeners.'
+        },
+        {
+            'name': 'UPVC Window Work', 'description': 'Installing UPVC windows.'
+        },
+        {
+            'name': 'Grill Work','description': 'Installing grills on the site.'
+        },
+        {
+            'name': 'Bathroom Work',
+            'subtasks': [
+                {'name': 'Tile Breaking & Floor Breaking', 'description': 'Breaking tiles and floors up to parent concrete.'},
+                {'name': 'Debris clearance', 'description': 'Clearing debris from bathroom work.'},
+                {'name': 'Waterproofing', 'description': 'Applying waterproofing to bathroom floors.'},
+                {'name': 'Tile laying', 'description': 'Laying new tiles in the bathroom.'}
+            ]
+        },
+        {
+            'name': 'Stone Cladding','description': 'Installing stone cladding on site.'
+        },
+        {
+            'name': 'Electrical False Ceiling – Fixtures',
+            'description': 'Installing fixtures in the electrical false ceiling.'
+        },
+        {
+            'name': 'False Ceiling',
+            'description': 'Installing false ceilings, including channel work, board work, joint putty, and painting.'
+        },
+        {
+            'name': 'Civil Work',
+            'description': 'Undertaking various civil work tasks, including electrical modifications, false ceiling installation, chimney core cutting, AC core cutting, etc.'
+        },
+        {
+            'name': 'Vendor Completion of Agreement'
+        },
+        {
+            'name': 'Vendor Identification'
+        },
+        {
+            'name': 'Getting the site ready for work',
+            'subtasks': [
+                {'name': 'Preparing the site, including the compulsory floor protection sheet'},
+                {'name': 'Washroom covering'},
+                {'name': 'Delivery of drums, dustbins, and gunny bags.'}
+            ]
+        },
+        {
+            'name': 'Site Marking',
+            'description': 'The project executive interacts with the client two days before site marking.'
+        },
+        {
+            'name': 'Pre-Work Site Readiness',
+            'description': 'Ensuring site readiness, including site marketing board and other branding.'
+        }
+            
+        ],
+        'Media':[
+            {
+               'name':'Photos & Testimonial','description':'Description: Capturing photos and testimonials.' 
+            }
+        ]
+    # Continue for other stages...
+}
+
+# Loop through each stage and its tasks
+for stage_name, task_details in stages_and_tasks.items():
+    # Try to create a new project stage (phase)
+    try:
+        stage = env['project.task.type'].create({
+            'name': stage_name,
+            'project_ids': [(4, project.id)]  # Add the project to the stage
+        })
+        if not stage:
+            raise ValueError(f"Failed to create stage '{stage_name}' for project {project.name}")
+
+    except Exception as e:
+        raise ValueError(f"Error creating stage '{stage_name}': {e}")
+
+    # Create tasks under the newly created stage
+    for task_info in task_details:
+        task_name = task_info.get('name')
+        task_description = task_info.get('description', '')  # Get task description, default to empty string if not provided
+        subtask_names = task_info.get('subtasks', [])  # Get subtasks if any
+
+        try:
+            # Create the main task with description
+            task = env['project.task'].create({
+                'name': task_name,
+                'description': task_description,  # Add task description
+                'project_id': project.id,
+                'stage_id': stage.id  # Link the task to the created stage
+            })
+            if not task:
+                raise ValueError(f"Failed to create task '{task_name}' in stage '{stage_name}'")
+
+            # Create subtasks with descriptions if any
+            for subtask_info in subtask_names:
+                subtask_name = subtask_info.get('name')
+                subtask_description = subtask_info.get('description', '')
+
+                subtask = env['project.task'].create({
+                    'name': subtask_name,
+                    'description': subtask_description,  # Add subtask description
+                    'project_id': project.id,
+                    'parent_id': task.id,  # Link the subtask to the main task
+                    'stage_id': stage.id  # Keep the subtask in the same stage
+                })
+                if not subtask:
+                    raise ValueError(f"Failed to create subtask '{subtask_name}' under task '{task_name}'")
+
+        except Exception as e:
+            raise ValueError(f"Error creating task '{task_name}' or subtasks in stage '{stage_name}': {e}")
